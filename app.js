@@ -9,13 +9,20 @@ const instance = axios.create({
     }
 })
 
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
 Main()
 
 async function Main() {
-    let orders = await GetAllOrders()
-    const refusedOrders = await GetRefusedOrder(orders)
-    await CancellAllRefusedOrders(refusedOrders)
+
+    while (true) {
+        let orders = await GetAllOrders()
+        const refusedOrders = await GetRefusedOrder(orders)
+        await CancellAllRefusedOrders(refusedOrders)
+        await sleep(300000)
+    }
 }
+
 
 
 async function GetAllOrders() {
@@ -45,7 +52,7 @@ async function CancellOrder(id) {
     await instance.post(`/orders/${id}/cancel`, {
         "reason": "other"
     })
-    console.log(`Um pedido foi cancelados as ${moment().toLocaleString()}`)
+    console.log(`Um pedido(s) foi cancelados as ${moment().toLocaleString()}`)
 }
 
 
